@@ -1,0 +1,35 @@
+[package]
+name = "conditional-s3-fetch"
+description = "File structure to parse and conditionally fetch from S3 when updated using etags"
+keywords = ["aws-s3"]
+
+version = "0.1.0"
+edition = "2021"
+
+authors = ["Bruno Tavares <connect+github@bltavares.com>"]
+license = "MIT OR Apache-2.0"
+homepage = "https://github.com/bltavares/conditional-s3-fetch"
+repository = "https://github.com/bltavares/conditional-s3-fetch"
+
+[dependencies]
+aws-sdk-s3 = "*"
+bytes = "*"
+
+thiserror = "*"
+
+serde = { version = "*", optional = true }
+serde_json = { version = "*", optional = true }
+simd-json = { version = "*", optional = true }
+
+cbor4ii = { version = "*", optional = true, features = ["serde1"] }
+
+# serde_edn = { git = "https://github.com/alex-dixon/serde_edn", rev = "4cc4957c0f47dc7ca3d6f5027b69104665d6ea5d", optional = true }
+
+tracing = "*"
+
+[features]
+default = ["simd-json", "cbor"]
+json = ["serde_json", "serde"]
+simd-json = ["dep:simd-json", "serde"]
+cbor = ["dep:cbor4ii", "serde"]
+# edn = ["dep:serde_edn", "serde"]
