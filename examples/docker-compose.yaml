@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./minio:/data
+    environment:
+      - "MINIO_ROOT_USER=example"
+      - "MINIO_ROOT_PASSWORD=secret_key"
+    entrypoint: ["/bin/bash", "/data/entrypoint.sh"]

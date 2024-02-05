@@ -1,7 +1,7 @@
 [package]
 name = "conditional-s3-fetch"
 description = "File structure to parse and conditionally fetch from S3 when updated using etags"
-keywords = ["aws-s3"]
+keywords = ["aws-s3", "etags", "conditional-fetch", "s3"]
 
 version = "0.1.0"
 edition = "2021"
@@ -12,20 +12,25 @@ homepage = "https://github.com/bltavares/conditional-s3-fetch"
 repository = "https://github.com/bltavares/conditional-s3-fetch"
 
 [dependencies]
-aws-sdk-s3 = "*"
-bytes = "*"
+aws-sdk-s3 = "1.14.0"
+bytes = "1.5.0"
 
-thiserror = "*"
+thiserror = "1.0.56"
 
-serde = { version = "*", optional = true }
-serde_json = { version = "*", optional = true }
-simd-json = { version = "*", optional = true }
+serde = { version = "1.0.196", optional = true }
+serde_json = { version = "1.0.113", optional = true }
+simd-json = { version = "0.13.8", optional = true }
 
-cbor4ii = { version = "*", optional = true, features = ["serde1"] }
+cbor4ii = { version = "0.3.2", optional = true, features = ["serde1"] }
 
 # serde_edn = { git = "https://github.com/alex-dixon/serde_edn", rev = "4cc4957c0f47dc7ca3d6f5027b69104665d6ea5d", optional = true }
 
-tracing = "*"
+tracing = "0.1.40"
+
+[dev-dependencies]
+tokio = { version = "1.36.0", features = ["full"] }
+futures = { version = "0.3.30" }
+# aws-sdk-s3-mock = "0.1.0"
 
 [features]
 default = ["simd-json", "cbor"]
@@ -33,3 +38,9 @@ json = ["serde_json", "serde"]
 simd-json = ["dep:simd-json", "serde"]
 cbor = ["dep:cbor4ii", "serde"]
 # edn = ["dep:serde_edn", "serde"]
+
+[package.metadata.bin]
+cargo-binstall = { version = "1.6.1" }
+cargo-nextest = { version = "0.9.67", locked = true }
+bacon = { version = "2.14.1", locked = true }
+changelog = { version = "0.3.4" }

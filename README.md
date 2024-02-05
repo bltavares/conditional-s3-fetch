@@ -1,16 +1,16 @@
 # conditional-s3-fetch
+File container struct that fetches and parses S3 files, with conditional fetching.
+
+<hr />
+
+
 
 ## Example
 
-```rust,no_run
-# use std::time::Duration;
-# fn client() -> aws_sdk_s3::Client { unimplemented!() }
-# async fn sleep(duration: Duration) { unimplemented!() }
-# async {
-# let s3_client = client();
-use conditional_s3_fetch::{File, ParseString};
+```rust,ignore,text
+use conditional_s3_fetch::File;;
 
-let mut file = File::<ParseString>::unloaded("my-bucket", "/my/path.txt");
+let mut file = File::<String>::unloaded("my-bucket", "/my/path.txt");
 
 for x in 1..10 {
     match file.fetch_data(&s3_client).await {
@@ -21,5 +21,4 @@ for x in 1..10 {
     println!("Scheduling another update soon");
     sleep(Duration::from_secs(10)).await;
 }
-# };
 ```

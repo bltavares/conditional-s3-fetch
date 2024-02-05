@@ -1,12 +1,36 @@
+//! Json parser implementation. (feature `json` or `simd-json`)
+//!
+//! Parser implementation to read Json data into a deserialized object.
+//!
+//! # Example
+//!
+//! ```rust
+//! # #[derive(serde::Deserialize)]
+//! # struct MyStruct;
+//! use conditional_s3_fetch::{File, Json};
+//!
+//! let file = File::<Json<MyStruct>>::unloaded("bucket", "/data/key.Json");
+//! ```
 use bytes::{Buf, Bytes};
 
 #[cfg(all(feature = "json", feature = "simd-json"))]
 compile_error!("Cannot enable both json and simd-json features");
 
+/// Parser implementation to read Json data into a deserialized object.
+///
+/// # Example
+///
+///  ```rust
+/// # #[derive(serde::Deserialize)]
+/// # struct MyStruct;
+/// use conditional_s3_fetch::{File, Json};
+///
+/// let file = File::<Json<MyStruct>>::unloaded("bucket", "/data/key.Json");
+/// ```
 #[derive(Debug)]
-pub struct ParseJson<T>(std::marker::PhantomData<T>);
+pub struct Json<T>(std::marker::PhantomData<T>);
 
-impl<T> crate::Parse for ParseJson<T>
+impl<T> crate::Parse for Json<T>
 where
     T: serde::de::DeserializeOwned,
 {
