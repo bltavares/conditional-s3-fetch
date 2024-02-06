@@ -85,10 +85,7 @@ async fn test_refetching_file_no_modified() {
 
     assert_eq!(file.as_content().map(|f| f.as_str()), Some("hello"));
 
-    let file = file
-        .fetch_data(&client)
-        .await
-        .expect("Failed to fetch file");
+    let file = file.fetch(&client).await.expect("Failed to fetch file");
 
     assert_eq!(None, file);
 
@@ -146,16 +143,10 @@ async fn test_refetching_file_after_being_modified() {
 
     assert_eq!(file.as_content().map(|f| f.as_str()), Some("hello"));
 
-    let not_modified = file
-        .fetch_data(&client)
-        .await
-        .expect("Failed to fetch file");
+    let not_modified = file.fetch(&client).await.expect("Failed to fetch file");
     assert_eq!(None, not_modified);
 
-    let modified = file
-        .fetch_data(&client)
-        .await
-        .expect("Failed to fetch file");
+    let modified = file.fetch(&client).await.expect("Failed to fetch file");
     assert_eq!(
         Some("bye"),
         modified

@@ -1,6 +1,18 @@
 # conditional-s3-fetch
 File container struct that fetches and parses S3 files, with conditional fetching.
 
+<a href="https://github.com/bltavares/conditional-s3-fetch/actions?query=workflow%3AQuickstart+branch%3Amain">
+    <img src="https://img.shields.io/github/actions/workflow/status/bltavares/conditional-s3-fetch/main.yml?branch=main" />
+</a>
+<a href="https://github.com/bltavares/conditional-s3-fetch/actions?query=workflow%3ACross-compile+branch%3Amain">
+    <img src="https://img.shields.io/github/actions/workflow/status/bltavares/conditional-s3-fetch/main.yml?branch=main" />
+</a>
+<a href="https://crates.io/crates/conditional-s3-fetch">
+    <img src="https://img.shields.io/crates/v/conditional-s3-fetch.svg" />
+</a>
+<a href="https://docs.rs/conditional-s3-fetch">
+    <img src="https://docs.rs/conditional-s3-fetch/badge.svg" />
+</a>
 <hr />
 
 Often you'll need to implement a background file fetcher on a longer-live process. To avoid unnecessary fetches, you can use the `conditional-s3-fetch` crate to fetch files from S3 only when they have been modified.
@@ -36,7 +48,7 @@ conditional-s3-fetch = { version = "0.1.0", default-features = false, features =
 
 ## Example
 
-You can start with a [`File::unloaded`] instance which doesn't have any data, and then fetch it using the `fetch_data` method later, such as a background process loop.
+You can start with a [`File::unloaded`] instance which doesn't have any data, and then fetch it using the `fetch` method later, such as a background process loop.
 
 ```rust,ignore,text
 use conditional_s3_fetch::File;;
@@ -44,7 +56,7 @@ use conditional_s3_fetch::File;;
 let mut file = File::<String>::unloaded("my-bucket", "/my/path.txt");
 
 for x in 1..10 {
-    match file.fetch_data(&s3_client).await {
+    match file.fetch(&s3_client).await {
         Ok(Some(new)) => file = new,
         Ok(None) => println!("No modification"),
         Err(e) => eprintln!("Error: {}", e),

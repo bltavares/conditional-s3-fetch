@@ -112,7 +112,7 @@ where
 ///
 /// /// File to be parsed from a struct using the `Json` parser.
 /// let mut json_file = File::<Json<MyStruct>>::unloaded("my-bucket", "/my/path.json");
-/// let new_json_file = json_file.fetch_data(&s3_client)
+/// let new_json_file = json_file.fetch(&s3_client)
 ///     .await
 ///     .expect("Failed to load the file");
 /// if let Some(new) = new_json_file {
@@ -295,7 +295,7 @@ where
 {
     /// Creates a reference to an unloaded file on S3
     ///
-    /// This file can be loaded in a later time using the `fetch_data` method.
+    /// This file can be loaded in a later time using the `fetch` method.
     /// Useful for initialization process, as a [`Client`](aws_sdk_s3::Client) is not required or where fetching the file happens in background.
     ///
     ///  ## Example
@@ -311,7 +311,7 @@ where
     /// let mut file = File::<String>::unloaded("my-bucket", "/my/path.txt");
     ///
     /// for x in 1..10 {
-    ///     match file.fetch_data(&s3_client).await {
+    ///     match file.fetch(&s3_client).await {
     ///         Ok(Some(new)) => file = new,
     ///         Ok(None) => println!("No modification"),
     ///         Err(e) => eprintln!("Error: {}", e),
@@ -334,7 +334,7 @@ where
     /// Useful for initialization process where failure should halt the service.
     /// A [`Client`](aws_sdk_s3::Client) is **required**.
     ///
-    /// This file can be refreshed using the `fetch_data` method.
+    /// This file can be refreshed using the `fetch` method.
     ///
     ///  ## Example
     ///
@@ -351,7 +351,7 @@ where
     ///     .expect("Failed to initially fetch the file");
     ///
     /// for x in 1..10 {
-    ///     match file.fetch_data(&s3_client).await {
+    ///     match file.fetch(&s3_client).await {
     ///         Ok(Some(new)) => file = new,
     ///         Ok(None) => println!("No modification"),
     ///         Err(e) => eprintln!("Error: {}", e),
@@ -370,7 +370,7 @@ where
         s3_client: &aws_sdk_s3::Client,
     ) -> Result<Self> {
         let file = Self::unloaded(bucket, path);
-        let fetch = file.fetch_data(s3_client).await?;
+        let fetch = file.fetch(s3_client).await?;
         fetch.ok_or_else(|| Error::UnabledToLoad)
     }
 
@@ -401,10 +401,7 @@ where
     /// # Errors
     /// Returns an [`Error`] if the content could not be fetched or parsed.
     #[tracing::instrument(skip_all)]
-    pub async fn fetch_data(
-        &self,
-        s3_client: &aws_sdk_s3::Client,
-    ) -> self::Result<Option<self::File<P>>>
+    pub async fn fetch(&self, s3_client: &aws_sdk_s3::Client) -> self::Result<Option<self::File<P>>>
     where
         P: Parse,
     {

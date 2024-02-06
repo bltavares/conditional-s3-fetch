@@ -26,7 +26,7 @@ where
 
     for x in 1..5 {
         println!("{}x - Fetching data for {:?}", x, &file);
-        match file.fetch_data(&s3_client).await {
+        match file.fetch(&s3_client).await {
             Ok(Some(new)) => file = new,
             Ok(None) => println!("No modification for {:?}", &file),
             Err(e) => eprintln!("Error: {:?} on {:?}", e, &file),
