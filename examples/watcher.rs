@@ -24,7 +24,7 @@ where
 
     let mut file = File::<T>::unloaded("example-bucket", path);
 
-    for x in 1..3 {
+    for x in 1..5 {
         println!("{}x - Fetching data for {:?}", x, &file);
         match file.fetch_data(&s3_client).await {
             Ok(Some(new)) => file = new,

@@ -31,8 +31,9 @@ check:
 
 # Run all tests
 test:
-	cargo test --all
-	cargo test --all --no-default-features --features json
+	cargo bin cargo-nextest run --all
+	cargo bin cargo-nextest run --no-default-features --lib --tests --features json
+	cargo test --doc
 .PHONY: test
 
 # Build docs locally

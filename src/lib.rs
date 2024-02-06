@@ -46,7 +46,7 @@ pub use cbor::Cbor;
 /// let content: Content<String> = data();
 /// assert_eq!(content.len(), 13);
 /// ```
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq, Clone)]
 pub struct Content<T> {
     etag: String,
     body: T,
@@ -67,7 +67,7 @@ impl<T> Deref for Content<T> {
 }
 
 /// Container struct to hold S3 file metadata to be fetched
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq, Clone)]
 pub struct UnloadedFile<P>
 where
     P: Parse,
@@ -78,7 +78,7 @@ where
 }
 
 /// Container struct to hold S3 file metadata and parsed content
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq, Clone)]
 pub struct LoadedFile<P>
 where
     P: Parse,
@@ -131,6 +131,27 @@ where
     Unloaded(UnloadedFile<P>),
     /// Reference to a loaded file on S3 with parsed content
     Loaded(LoadedFile<P>),
+}
+
+impl<P> PartialEq for File<P>
+where
+    P: Parse + PartialEq,
+    P::Output: PartialEq,
+{
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (Self::Unloaded(l0), Self::Unloaded(r0)) => l0 == r0,
+            (Self::Loaded(l0), Self::Loaded(r0)) => l0 == r0,
+            _ => false,
+        }
+    }
+}
+
+impl<P> Eq for File<P>
+where
+    P: Parse + PartialEq,
+    P::Output: Eq,
+{
 }
 
 impl<P> File<P>
@@ -205,7 +226,7 @@ where
 }
 
 /// Alias for boxed error handling during parsing
-type BoxedResult<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
+pub type BoxedResult<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
 /// Trait to parse the [`File`] content after fetching it from S3
 pub trait Parse {
